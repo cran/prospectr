@@ -1,16 +1,16 @@
 #' @title k-means sampling
 #' @description Perform a k-means sampling on a \code{matrix} or \code{data.frame} for multivariate calibration
 #' @usage 
-#' naes(X,k,pc,iter.max = 10, method = 0,.center = TRUE,.scale = FALSE)
-#' @param X numeric \code{matrix} or \code{data.frame}
+#' naes(X, k, pc, iter.max = 10, method = 0, .center = TRUE, .scale = FALSE)
+#' @param X a numeric \code{matrix} or \code{data.frame}.
 #' @param k either the number of calibration samples to select or a set of cluster centres to initiate the k-means clustering. 
 #' @param pc optional. If not specified, k-means is run directly on the variable (Euclidean) space. 
 #' Alternatively, a PCA is performed before k-means and \code{pc} is the number of principal components kept. If \code{pc < 1}, 
 #' the number of principal components kept corresponds to the number of components explaining at least (\code{pc * 100}) percent of the total variance.
-#' @param iter.max maximum number of iterations allowed for the k-means clustering. Default is \code{iter.max = 10} (see \code{?kmeans})
-#' @param method the method used for selecting calibration samples within each cluster: either samples closest to the cluster
+#' @param iter.max maximum number of iterations allowed for the k-means clustering. Default is \code{iter.max = 10} (see \code{?kmeans}).
+#' @param method the method used for selecting calibration samples within each cluster: either samples closest to the cluster.
 #' centers (\code{method = 0}, default), samples farthest away from the centre of the data (\code{method = 1}) or
-#' random selection (\code{method = 2})
+#' random selection (\code{method = 2}).
 #' @param .center logical value indicating whether the input matrix should be centered before Principal Component 
 #' Analysis. Default set to TRUE.
 #' @param .scale logical value indicating whether the input matrix should be scaled before Principal Component 
@@ -38,14 +38,24 @@
 #' Naes, T., Isaksson, T., Fearn, T., and Davies, T., 2002. A user friendly guide to multivariate calibration and classification. NIR Publications, Chichester, United Kingdom.
 #' @examples
 #' data(NIRsoil) 
-#' sel <- naes(NIRsoil$spc,k=5,p=.99,method=0)
-#' plot(sel$pc[,1:2],col=sel$cluster+2) # clusters
+#' sel <- naes(NIRsoil$spc,k = 5,p = .99, method = 0)
+#' # clusters
+#' plot(sel$pc[, 1:2], col = sel$cluster + 2) 
 #' # points selected for calibration with method = 0
-#' points(sel$pc[sel$model,1:2],col=2,pch=19,cex=1)
-#' sel2 <- naes(NIRsoil$spc,k=sel$centers,p=.99,method=1) # pre-defined centers can also be provided
+#' points(sel$pc[sel$model, 1:2], 
+#'        col = 2, 
+#'        pch = 19, 
+#'        cex = 1)
+#' # pre-defined centers can also be provided
+#'sel2 <- naes(NIRsoil$spc,
+#'            k = sel$centers, 
+#'            p = .99, method = 1) 
 #' # points selected for calibration with method = 1 
-#' points(sel$pc[sel2$model,1:2],col=1,pch=15,cex=1) 
-#' @author Antoine Stevens and Leonardo Ramirez-Lopez
+#' points(sel$pc[sel2$model, 1:2], 
+#'        col = 1, 
+#'        pch = 15, 
+#'        cex = 1)
+#' @author Antoine Stevens & Leonardo Ramirez-Lopez
 #' @seealso \code{\link{kenStone}}, \code{\link{honigs}}, \code{\link{duplex}}, \code{\link{shenkWest}}
 #' @export
 

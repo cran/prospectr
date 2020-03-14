@@ -2,11 +2,11 @@
 #' @description
 #' Detects and removes replicate outliers in data series based on the Cochran \emph{C} test for homogeneity in variance.
 #' @usage
-#' cochranTest(X,id,fun='sum',alpha=0.05)
-#' @param X input \code{data.frame} or \code{matrix}
-#' @param id \code{factor} of the replicate identifiers
-#' @param fun function to aggregate data: 'sum' (default), 'mean', 'PC1' or 'PC2'
-#' @param alpha \emph{p}-value of the Cochran \emph{C} test
+#' cochranTest(X, id, fun = 'sum', alpha = 0.05)
+#' @param X a \code{data.frame} or \code{matrix}.
+#' @param id \code{factor} of the replicate identifiers.
+#' @param fun function to aggregate data: 'sum' (default), 'mean', 'PC1' or 'PC2'.
+#' @param alpha \emph{p}-value of the Cochran \emph{C} test.
 #' @author Antoine Stevens
 #' @return a \code{list} with components:
 #' \itemize{
@@ -41,19 +41,18 @@
 #' 
 #' R.U.E. 't Lam (2010). Scrutiny of variance results for outliers: Cochran's test optimized. Analytica Chimica Acta 659, 68-84.
 #' 
-#' \url{http://en.wikipedia.org/wiki/Cochran's_C_test}
-#' 
+#' \url{https://en.wikipedia.org/wiki/Cochran's_C_test}
 #' @export
 
 cochranTest <- function(X, id, fun = "sum", alpha = 0.05) {
     
     if (!is.factor(id)) 
         stop("id should be a factor")
-    id <- id[drop = T]
+    id <- id[drop = TRUE]
     pval <- 0
     X2 <- NULL
     n <- nrow(X)
-    X <- data.frame(ID = 1:n, X, check.names = F)
+    X <- data.frame(ID = 1:n, X, check.names = FALSE)
     
     while (pval <= alpha) {
         
@@ -62,9 +61,9 @@ cochranTest <- function(X, id, fun = "sum", alpha = 0.05) {
         }, mean = {
             apply(X[, -1], 1, mean)
         }, PC1 = {
-            prcomp(X[, -1], center = T, .scale = F)$x[, 1]
+            prcomp(X[, -1], center = TRUE, .scale = FALSE)$x[, 1]
         }, PC2 = {
-            prcomp(X[, -1], center = T, .scale = F)$x[, 2]
+            prcomp(X[, -1], center = TRUE, .scale = FALSE)$x[, 2]
         })
         
         vars <- tapply(x, id, var)  # variances
@@ -82,12 +81,12 @@ cochranTest <- function(X, id, fun = "sum", alpha = 0.05) {
                 out <- 1:length(maxvar)
             }
             X <- X[-maxvar[out], ]
-            id <- id[-maxvar[out]][drop = T]
+            id <- id[-maxvar[out]][drop = TRUE]
         } else {
             # keep those that have been flagged but are not outliers
             X2 <- rbind(X2, X[maxvar, ])
             X <- X[-maxvar, ]
-            id <- id[-maxvar][drop = T]
+            id <- id[-maxvar][drop = TRUE]
         }
     }
     X <- rbind(X, X2)

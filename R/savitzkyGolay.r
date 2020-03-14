@@ -2,23 +2,35 @@
 #' @description
 #' Savitzky-Golay smoothing and derivative of a data \code{matrix}, \code{data.frame} or \code{vector}.
 #' @usage
-#' savitzkyGolay(X,m,p,w,delta.wav)
+#' savitzkyGolay(X, m, p, w, delta.wav)
 #' @param X a numeric \code{data.frame}, \code{matrix} or \code{vector} to transform
-#' @param m differentiation order
-#' @param p polynomial order
-#' @param w window size (must be odd)
-#' @param delta.wav optional sampling interval
+#' @param m the differentiation order.
+#' @param p the polynomial order.
+#' @param w a window size (must be odd).
+#' @param delta.wav (optional) sampling interval.
 #' @author Antoine Stevens
 #' @examples
 #' data(NIRsoil)
 #' spc <- 1/10^NIRsoil$spc # conversion to reflectance
 #' opar <- par(no.readonly = TRUE)
-#' par(mfrow=c(2,1),mar=c(4,4,2,2))
+#' par(mfrow = c(2, 1), mar = c(4, 4, 2, 2))
 #' # plot of the 10 first spectra
-#' matplot(as.numeric(colnames(spc)),t(spc[1:10,]),type='l',xlab='',ylab='Reflectance') 
-#' mtext('Raw spectra') 
-#' sg <- savitzkyGolay(X = spc,1,3,11,delta.wav=2)
-#' matplot(as.numeric(colnames(sg)),t(sg[1:10,]),type='l',xlab='Wavelength /nm',ylab='1st derivative') 
+#' matplot(as.numeric(colnames(spc)), 
+#'         t(spc[1:10, ]), 
+#'         type = 'l', 
+#'         xlab = '', 
+#'         ylab = 'Reflectance')
+#' mtext('Raw spectra')
+#' sg <- savitzkyGolay(X = spc, 
+#'                     m = 1, 
+#'                     p = 3, 
+#'                     w = 11, 
+#'                     delta.wav = 2)
+#' matplot(as.numeric(colnames(sg)), 
+#'         t(sg[1:10, ]), 
+#'         type = 'l', 
+#'         xlab = 'Wavelength /nm', 
+#'         ylab = '1st derivative')
 #' mtext('1st derivative spectra')
 #' par(opar)
 #' @details
@@ -34,7 +46,6 @@
 #' @references Savitzky, A., and Golay, M.J.E., 1964. Smoothing and differentiation of data by simplified least squares procedures. Anal. Chem. 36, 1627-1639.
 #' 
 #' Wentzell, P.D., and Brown, C.D., 2000. Signal processing in analytical chemistry. Encyclopedia of Analytical Chemistry, 9764-9800.
-#' @seealso \code{\link[signal]{sgolayfilt}}
 #' @export
 #'
 

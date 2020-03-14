@@ -3,17 +3,17 @@
 #' @description
 #' Select calibration samples from multivariate data using the Puchwein algorithm
 #' @usage
-#' puchwein(X,pc=0.95,k,min.sel,details=FALSE,.center = TRUE,.scale = FALSE)
-#' @param X input \code{data.frame} or \code{matrix} from which to select calibration samples
-#' @param pc number of principal components retained in the computation of the distance in the standardized Principal Component space (Mahalanobis distance). 
+#' puchwein(X, pc = 0.95, k, min.sel, details = FALSE, .center = TRUE, .scale = FALSE)
+#' @param X a \code{data.frame} or \code{matrix} from which the calibration samples are to be selected.
+#' @param pc the number of principal components retained in the computation of the distance in the standardized Principal Component space (Mahalanobis distance). 
 #' If \code{pc < 1}, the number of principal components kept corresponds to the number of components 
 #' explaining at least (\code{pc * 100}) percent of the total variance (default = 0.95 as in the Puchwein paper).
-#' @param k initial limiting distance parameter, if not specified (default), set to 0.2. 
+#' @param k the initial limiting distance parameter, if not specified (default), set to 0.2. 
 #' According to Puchwein, a good starting value for the limiting distance is \eqn{d_{ini} = k(p-2)} where \eqn{p} is the number of
 #' principal components 
 #' @param min.sel minimum number of samples to select for calibration (default = 5).
-#' @param details logical value, if \code{TRUE}, adds a component in the output list with the indices of the objects kept in each loop (default to \code{FALSE})
-#' @param .center logical value indicating whether the input matrix should be centered before Principal Component 
+#' @param details logical value, if \code{TRUE}, adds a component in the output list with the indices of the objects kept in each loop (default to \code{FALSE}).
+#' @param .center logical value indicating whether the input matrix should be centered before Principal Component.
 #' Analysis. Default set to TRUE.
 #' @param .scale logical value indicating whether the input matrix should be scaled before Principal Component 
 #' Analysis. Default set to FALSE.
@@ -30,15 +30,15 @@
 #' }
 #' @examples
 #' data(NIRsoil)
-#' sel <- puchwein(NIRsoil$spc,k=0.2,pc=.99)
-#' plot(sel$pc[,1:2])
+#' sel <- puchwein(NIRsoil$spc, k = 0.2, pc = .99)
+#' plot(sel$pc[, 1:2])
 #' # points selected for calibration 
-#' points(NIRsoil$spc[sel$model,1:2],col=2,pch=2) 
+#' points(NIRsoil$spc[sel$model, 1:2], col = 2, pch = 2) 
 #' # Leverage plot
-#' opar <- par(no.readonly=TRUE)
-#' par(mar=c(4,5,2,2))
-#' plot(sel$leverage$loop,sel$leverage$diff,type='l',
-#'      xlab='# loops',ylab='Difference between theoretical and \n observed sum of leverages')
+#' opar <- par(no.readonly = TRUE)
+#' par(mar = c(4, 5, 2, 2))
+#' plot(sel$leverage$loop, sel$leverage$diff, type = 'l', 
+#'      xlab = '# loops', ylab = 'Difference between theoretical and \n observed sum of leverages')
 #' par(opar)
 #' @references 
 #' Puchwein, G., 1988. Selection of calibration samples for near-infrared spectrometry by factor analysis of spectra. Analytical Chemystry 60, 569-573. 
@@ -88,12 +88,12 @@ puchwein <- function(X, pc = 0.95, k = 0.2, min.sel = 5, details = FALSE, .cente
         if (any(pcsum)) 
             pc <- max(which(pcsum)) + 1 else pc <- 1
     }
-    X <- sweep(pca$x[, 1:pc, drop = F], 2, pca$sdev[1:pc], "/")  # scaling of the scores  
+    X <- sweep(pca$x[, 1:pc, drop = FALSE], 2, pca$sdev[1:pc], "/")  # scaling of the scores  
     
     H <- fastDistV(X, colMeans(X), "euclid")  # mahalanobis distance to the centre
     lsel <- list()
     x <- data.frame(ID = 1:nrow(X), H)
-    ord <- order(H, decreasing = T)
+    ord <- order(H, decreasing = TRUE)
     d <- fastDist(X, X, "euclid")[ord, ord]
     x <- x[ord, ]
     

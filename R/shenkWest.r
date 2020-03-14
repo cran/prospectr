@@ -3,17 +3,17 @@
 #' @description
 #' Select calibration samples from a large multivariate data using the SELECT algorithm as described in Shenk and Westerhaus (1991).
 #' @usage
-#' shenkWest(X,d.min=0.6,pc=0.95,rm.outlier=FALSE,.center = TRUE,.scale = FALSE)
-#' @param X numeric \code{data.frame} or \code{matrix} 
-#' @param d.min minimum distance (default = 0.6)
-#' @param pc number of principal components retained in the computation distance in the standardized Principal Component space (Mahalanobis distance).
+#' shenkWest(X, d.min = 0.6, pc = 0.95, rm.outlier = FALSE, .center = TRUE, .scale = FALSE)
+#' @param X a numeric \code{data.frame} or \code{matrix}.
+#' @param d.min a minimum distance (default = 0.6).
+#' @param pc the number of principal components retained in the computation distance in the standardized Principal Component space (Mahalanobis distance).
 #' If \code{pc < 1}, the number of principal components kept corresponds to the number of components 
 #' explaining at least (\code{pc * 100}) percent of the total variance (default = 0.95).
-#' @param rm.outlier logical value. if \code{TRUE}, remove observations with a standardized mahalanobis distance
-#' to the center of the data greater than 3 (default = \code{FALSE})
-#' @param .center logical value indicating whether the input matrix should be centered before Principal Component 
+#' @param rm.outlier logical. If \code{TRUE}, remove observations with a standardized mahalanobis distance
+#' to the center of the data greater than 3 (default = \code{FALSE}).
+#' @param .center logical. Indicates whether the input matrix should be centered before Principal Component 
 #' Analysis. Default set to TRUE.
-#' @param .scale logical value indicating whether the input matrix should be scaled before Principal Component 
+#' @param .scale logical. Indicates whether the input matrix should be scaled before Principal Component 
 #' Analysis. Default set to FALSE.
 #' @author Antoine Stevens
 #' @return a \code{list} with components:
@@ -31,13 +31,14 @@
 #' using the CENTER algorithm of Shenk and Westerhaus (1991), i.e. samples with a standardized Mahalanobis distance \code{>3} are removed.
 #' @examples
 #' data(NIRsoil)
-#' sel <- shenkWest(NIRsoil$spc,pc=.99,d.min=.3,rm.outlier=FALSE)
-#' plot(sel$pc[,1:2],xlab='PC1',ylab='PC2')
-#' points(sel$pc[sel$model,1:2],pch=19,col=2)  # points selected for calibration 
+#' NIRsoil$spc <- binning(X=NIRsoil$spc, bin.size = 5) # reduce data size
+#' sel <- shenkWest(NIRsoil$spc, pc = .99, d.min = .3, rm.outlier = FALSE)
+#' plot(sel$pc[, 1:2], xlab = 'PC1', ylab = 'PC2')
+#' points(sel$pc[sel$model, 1:2], pch = 19, col = 2)  # points selected for calibration 
 #' # without outliers
-#' sel <- shenkWest(NIRsoil$spc,pc=.99,d.min=.3,rm.outlier=TRUE)
-#' plot(sel$pc[,1:2],xlab='PC1',ylab='PC2')
-#' points(sel$pc[sel$model,1:2],pch=15,col=3)  # points selected for calibration 
+#' sel <- shenkWest(NIRsoil$spc, pc = .99, d.min = .3, rm.outlier = TRUE)
+#' plot(sel$pc[, 1:2], xlab = 'PC1', ylab = 'PC2')
+#' points(sel$pc[sel$model, 1:2], pch = 15, col = 3)  # points selected for calibration 
 #' @references Shenk, J.S., and Westerhaus, M.O., 1991. Population Definition, Sample Selection, and Calibration Procedures for Near Infrared Reflectance Spectroscopy. Crop Science 31, 469-474.
 #' @seealso \code{\link{kenStone}}, \code{\link{duplex}}, \code{\link{puchwein}}
 #' @export

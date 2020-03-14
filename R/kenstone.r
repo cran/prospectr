@@ -1,9 +1,9 @@
 #' @title Kennard-Stone algorithm for calibration sampling
 #' @description Select calibration samples from a large multivariate data using the Kennard-Stone algorithm
 #' @usage 
-#' kenStone(X,k,metric,pc,group,.center = TRUE,.scale = FALSE)
-#' @param X a numeric \code{matrix} 
-#' @param k number of desired calibration samples
+#' kenStone(X, k, metric, pc, group, .center = TRUE, .scale = FALSE)
+#' @param X a numeric \code{matrix} .
+#' @param k number of calibration samples to be selected.
 #' @param metric distance metric to be used: 'euclid' (Euclidean distance) or 'mahal' (Mahalanobis distance, default). 
 #' @param pc optional. If not specified, distance are computed in the Euclidean space. Alternatively, distance are computed 
 #' in the principal component score space and  \code{pc} is the number of principal components retained. 
@@ -28,14 +28,14 @@
 #' Kennard, R.W., and Stone, L.A., 1969. Computer aided design of experiments. Technometrics 11, 137-148.
 #' @examples
 #' data(NIRsoil) 
-#' sel <- kenStone(NIRsoil$spc,k=30,pc=.99)
-#' plot(sel$pc[,1:2],xlab='PC1',ylab='PC2')
-#' points(sel$pc[sel$model,1:2],pch=19,col=2)  # points selected for calibration  
+#' sel <- kenStone(NIRsoil$spc, k = 30, pc = .99)
+#' plot(sel$pc[, 1:2], xlab = 'PC1', ylab = 'PC2')
+#' points(sel$pc[sel$model, 1:2], pch = 19, col = 2)  # points selected for calibration  
 #' # Test on artificial data
-#' X <- expand.grid(1:20,1:20) + rnorm(1e5,0,.1)
-#' plot(X,xlab='VAR1',ylab='VAR2')
-#' sel <- kenStone(X,k=25,metric='euclid')
-#' points(X[sel$model,],pch=19,col=2)
+#' X <- expand.grid(1:20, 1:20) + rnorm(1e5, 0, .1)
+#' plot(X, xlab = 'VAR1', ylab = 'VAR2')
+#' sel <- kenStone(X, k = 25, metric = 'euclid')
+#' points(X[sel$model, ], pch = 19, col = 2)
 #' @author Antoine Stevens & Leonardo Ramirez-Lopez
 #' @details 
 #' The Kennard--Stone algorithm allows to select samples with a uniform distribution over the predictor space (Kennard and Stone, 1969).
@@ -100,9 +100,7 @@ kenStone <- function(X, k, metric = c("mahal", "euclid"), pc, group, .center = T
         if (!is.factor(group)) {
             group <- as.factor(group)
             warning("group has been coerced to a factor")
-        }
-        if (k > nlevels(group)) 
-            k <- nlevels(group) - 1
+        }        
     }
     
     # Fist two most distant points to model set

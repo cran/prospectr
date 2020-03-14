@@ -1,11 +1,11 @@
 #' @title DUPLEX algorithm for calibration sampling
 #' @description Select calibration samples from a large multivariate data using the DUPLEX algorithm
 #' @usage 
-#' duplex(X,k,metric,pc,group,.center = TRUE,.scale = FALSE)
-#' @param X a \code{matrix}
-#' @param k number of calibration/validation samples
-#' @param metric distance metric to be used: 'euclid' (Euclidean distance) or 'mahal' (Mahalanobis distance, default). 
-#' @param pc optional. If not specified, distance are computed in the Euclidean space. Alternatively, distance are computed 
+#' duplex(X, k, metric, pc, group, .center = TRUE, .scale = FALSE)
+#' @param X a numeric \code{matrix}.
+#' @param k the number of calibration/validation samples.
+#' @param metric the distance metric to be used: 'euclid' (Euclidean distance) or 'mahal' (Mahalanobis distance, default). 
+#' @param pc optional. The number of Principal Components to be used to select the samples. If not specified, distance are computed in the Euclidean space. Alternatively, distance are computed.
 #' in the principal component score space and  \code{pc} is the number of principal components retained. 
 #' If \code{pc < 1}, the number of principal components kept corresponds to the number of components 
 #' explaining at least (\code{pc * 100}) percent of the total variance.
@@ -14,9 +14,9 @@
 #' , of the same origin, or of the same soil profile). When one observation is selected by the procedure all observations
 #'  of the same group are removed together and assigned to the calibration/validation sets. This allows to select calibration
 #'  and validation samples that are independent from each other.
-#' @param .center logical value indicating whether the input matrix should be centered before Principal Component 
+#' @param .center logical value indicating whether the input matrix should be centered before projecting \code{X} onto the Principal Component space. 
 #' Analysis. Default set to TRUE.
-#' @param .scale logical value indicating whether the input matrix should be scaled before Principal Component 
+#' @param .scale logical value indicating whether the input matrix should be scaled before \code{X} onto the Principal Component space. 
 #' Analysis. Default set to FALSE.
 #' @return a \code{list} with components:
 #' \itemize{
@@ -41,16 +41,16 @@
 #' @author Antoine Stevens & Leonardo Ramirez--Lopez
 #' @examples
 #' data(NIRsoil) 
-#' sel <- duplex(NIRsoil$spc,k=30,metric='mahal',pc=.99)
-#' plot(sel$pc[,1:2],xlab='PC1',ylab='PC2')
-#' points(sel$pc[sel$model,1:2],pch=19,col=2)  # points selected for calibration  
-#' points(sel$pc[sel$test,1:2],pch=18,col=3) # points selected for validation
+#' sel <- duplex(NIRsoil$spc, k = 30, metric = 'mahal', pc = .99)
+#' plot(sel$pc[, 1:2], xlab = 'PC1', ylab = 'PC2')
+#' points(sel$pc[sel$model, 1:2], pch = 19, col = 2)  # points selected for calibration  
+#' points(sel$pc[sel$test, 1:2], pch = 18, col = 3) # points selected for validation
 #' # Test on artificial data
-#' X <- expand.grid(1:20,1:20) + rnorm(1e5,0,.1)
-#' plot(X[,1],X[,2],xlab='VAR1',ylab='VAR2')
-#' sel <- duplex(X,k=25,metric='mahal')
-#' points(X[sel$model,],pch=19,col=2) # points selected for calibration  
-#' points(X[sel$test,],pch=15,col=3) # points selected for validation  
+#' X <- expand.grid(1:20, 1:20) + rnorm(1e5, 0, .1)
+#' plot(X[, 1], X[, 2], xlab = 'VAR1', ylab = 'VAR2')
+#' sel <- duplex(X, k = 25, metric = 'mahal')
+#' points(X[sel$model, ], pch = 19, col = 2) # points selected for calibration  
+#' points(X[sel$test, ], pch = 15, col = 3) # points selected for validation  
 #' @seealso \code{\link{kenStone}}, \code{\link{honigs}}, \code{\link{shenkWest}}, \code{\link{naes}}
 #' @export
 
@@ -96,8 +96,6 @@ duplex <- function(X, k, metric = c("mahal", "euclid"), pc, group, .center = TRU
             group <- as.factor(group)
             warning("group has been coerced to a factor")
         }
-        if (k > nlevels(group)/2) 
-            k <- floor(nlevels(group)/2)
     }
     
     # Fist two most distant points to model set
