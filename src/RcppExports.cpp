@@ -6,34 +6,6 @@
 
 using namespace Rcpp;
 
-// ResampleCppM
-NumericMatrix ResampleCppM(NumericMatrix X, NumericVector wav, NumericVector new_wav, NumericVector fwhm);
-RcppExport SEXP _prospectr_ResampleCppM(SEXP XSEXP, SEXP wavSEXP, SEXP new_wavSEXP, SEXP fwhmSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type wav(wavSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type new_wav(new_wavSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type fwhm(fwhmSEXP);
-    rcpp_result_gen = Rcpp::wrap(ResampleCppM(X, wav, new_wav, fwhm));
-    return rcpp_result_gen;
-END_RCPP
-}
-// ResampleCppV
-NumericVector ResampleCppV(NumericVector X, NumericVector wav, NumericVector new_wav, NumericVector fwhm);
-RcppExport SEXP _prospectr_ResampleCppV(SEXP XSEXP, SEXP wavSEXP, SEXP new_wavSEXP, SEXP fwhmSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type X(XSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type wav(wavSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type new_wav(new_wavSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type fwhm(fwhmSEXP);
-    rcpp_result_gen = Rcpp::wrap(ResampleCppV(X, wav, new_wav, fwhm));
-    return rcpp_result_gen;
-END_RCPP
-}
 // bitAND
 int bitAND(int aa, int bb);
 RcppExport SEXP _prospectr_bitAND(SEXP aaSEXP, SEXP bbSEXP) {
@@ -108,6 +80,46 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// get_msc_coeff
+NumericMatrix get_msc_coeff(arma::mat X, arma::vec reference_spc);
+RcppExport SEXP _prospectr_get_msc_coeff(SEXP XSEXP, SEXP reference_spcSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type reference_spc(reference_spcSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_msc_coeff(X, reference_spc));
+    return rcpp_result_gen;
+END_RCPP
+}
+// resample_fwhm
+NumericMatrix resample_fwhm(NumericMatrix X, NumericVector wav, NumericVector new_wav, NumericVector fwhm);
+RcppExport SEXP _prospectr_resample_fwhm(SEXP XSEXP, SEXP wavSEXP, SEXP new_wavSEXP, SEXP fwhmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wav(wavSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type new_wav(new_wavSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type fwhm(fwhmSEXP);
+    rcpp_result_gen = Rcpp::wrap(resample_fwhm(X, wav, new_wav, fwhm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// resample_fwhm_vec
+NumericVector resample_fwhm_vec(NumericVector X, NumericVector wav, NumericVector new_wav, NumericVector fwhm);
+RcppExport SEXP _prospectr_resample_fwhm_vec(SEXP XSEXP, SEXP wavSEXP, SEXP new_wavSEXP, SEXP fwhmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type X(XSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type wav(wavSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type new_wav(new_wavSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type fwhm(fwhmSEXP);
+    rcpp_result_gen = Rcpp::wrap(resample_fwhm_vec(X, wav, new_wav, fwhm));
+    return rcpp_result_gen;
+END_RCPP
+}
 // residLm
 NumericMatrix residLm(NumericMatrix Yr, NumericMatrix Xr);
 RcppExport SEXP _prospectr_residLm(SEXP YrSEXP, SEXP XrSEXP) {
@@ -122,14 +134,15 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_prospectr_ResampleCppM", (DL_FUNC) &_prospectr_ResampleCppM, 4},
-    {"_prospectr_ResampleCppV", (DL_FUNC) &_prospectr_ResampleCppV, 4},
     {"_prospectr_bitAND", (DL_FUNC) &_prospectr_bitAND, 2},
     {"_prospectr_bitSR", (DL_FUNC) &_prospectr_bitSR, 2},
     {"_prospectr_convCppM", (DL_FUNC) &_prospectr_convCppM, 2},
     {"_prospectr_convCppV", (DL_FUNC) &_prospectr_convCppV, 2},
     {"_prospectr_fastDist", (DL_FUNC) &_prospectr_fastDist, 3},
     {"_prospectr_fastDistV", (DL_FUNC) &_prospectr_fastDistV, 3},
+    {"_prospectr_get_msc_coeff", (DL_FUNC) &_prospectr_get_msc_coeff, 2},
+    {"_prospectr_resample_fwhm", (DL_FUNC) &_prospectr_resample_fwhm, 4},
+    {"_prospectr_resample_fwhm_vec", (DL_FUNC) &_prospectr_resample_fwhm_vec, 4},
     {"_prospectr_residLm", (DL_FUNC) &_prospectr_residLm, 2},
     {NULL, NULL, 0}
 };

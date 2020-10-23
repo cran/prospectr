@@ -1,58 +1,68 @@
 #' @title Resample spectral data
 #' @description
-#' Resample a data \code{matrix}, \code{data.frame} or \code{vector} to new coordinates (e.g. band positions)
-#' using spline or linear interpolation. This function is a simple wrapper around \code{\link{approx}}
-#' and \code{\link{splinefun}} in \pkg{base}.
+#' Resample a data matrix or vector to new coordinates (e.g.
+#' band positions) using spline or linear interpolation. This function is a
+#' simple wrapper around \code{\link{approx}} and \code{\link{splinefun}} in
+#' \pkg{base}.
 #' @usage
-#' resample(X, wav, new.wav, interpol)
-#' @param X numeric \code{data.frame}, \code{matrix} or \code{vector} to resample.
+#' resample(X, wav, new.wav, interpol = "spline", ...)
+#' @param X numeric matrix or vector to resample (optionally a data frame that 
+#' can be coerced to a numerical matrix).
 #' @param wav a numeric vector giving the original band positions.
 #' @param new.wav a numeric vector giving the new band positions.
 #' @param interpol the interpolation method: 'linear' or 'spline' (default).
-#' @author Antoine Stevens
+#' @param ... additional arguments to be passed to the \code{\link{splinefun}}
+#' function when \code{interpol = 'spline'}.
+#' @author Antoine Stevens and \href{https://orcid.org/0000-0002-5369-5120}{Leonardo Ramirez-Lopez}
 #' @examples
 #' data(NIRsoil)
 #' wav <- as.numeric(colnames(NIRsoil$spc))
-#' spc <- 1/10^NIRsoil$spc # conversion to reflectance
 #' # increase spectral resolution by 2
-#' resampled <- resample(spc, wav, seq(1100, 2498, 2)) 
-#' dim(spc)
-#' dim(resampled)
-#' @return a \code{matrix} or \code{vector} with resampled values.
-#' @seealso \code{\link{resample2}}
+#' NIRsoil$spc_resampled <- resample(NIRsoil$spc, wav, seq(1100, 2498, 2))
+#' dim(NIRsoil$spc)
+#' dim(NIRsoil$spc_resampled)
+#' 
+#' @return 
+#' a matrix or vector with resampled values.
+#' @seealso 
+#' \code{\link{resample2}}
 #' @export
 #'
-resample <- function(X, wav, new.wav, interpol = "spline") {
-    
-    if (is.data.frame(X)) 
-        X <- as.matrix(X)
-    if (missing(wav)) 
-        stop("wav argument should be specified")
-    
-    if(!interpol %in% c("linear", "spline"))
-        stop("Argument 'interpol' must be either 'linear or 'spline'")
-    
-    resfun <- function(x, interpol) {
-        if (interpol == "linear") {
-            approx(x = wav, y = x, xout = new.wav, method = "linear")$y
-        } else {
-            splinefun(x = wav, y = x)(new.wav)
-        }
-    }
-    
-    if (is.matrix(X)) {
-        if (length(wav) != ncol(X)) 
-            stop("length(wav) should be equal to ncol(X)")
-        
-        output <- t(apply(X, 1, resfun, interpol))
-        rownames(output) <- rownames(X)
-        colnames(output) <- new.wav
+resample <- function(X, wav, new.wav, interpol = "spline", ...) {
+  if (is.data.frame(X)) {
+    X <- as.matrix(X)
+  }
+  if (missing(wav)) {
+    stop("wav argument should be specified")
+  }
+
+  if (!interpol %in% c("linear", "spline")) {
+    stop("Argument 'interpol' must be either 'linear or 'spline'")
+  }
+
+  resfun <- function(x, interpol) {
+    if (interpol == "linear") {
+      approx(x = wav, y = x, xout = new.wav, method = "linear")$y
     } else {
-        if (length(wav) != length(X)) 
-            stop("length(wav) should be equal to length(X)")
-        output <- resfun(X, interpol)
-        names(output) <- new.wav
+      splinefun(x = wav, y = x, ...)(new.wav)
     }
-    
-    return(output)
-} 
+  }
+
+  if (is.matrix(X)) {
+    if (length(wav) != ncol(X)) {
+      stop("length(wav) should be equal to ncol(X)")
+    }
+
+    output <- t(apply(X, 1, resfun, interpol))
+    rownames(output) <- rownames(X)
+    colnames(output) <- new.wav
+  } else {
+    if (length(wav) != length(X)) {
+      stop("length(wav) should be equal to length(X)")
+    }
+    output <- resfun(X, interpol)
+    names(output) <- new.wav
+  }
+
+  return(output)
+}
