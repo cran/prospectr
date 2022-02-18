@@ -29,10 +29,10 @@ centers (\code{method = 0}, default), samples farthest away from the centre of t
 data (\code{method = 1}) or
 random selection (\code{method = 2}).}
 
-\item{.center}{logical value indicating whether the input matrix should be
+\item{.center}{logical value indicating whether the input matrix must be
 centered before Principal Component Analysis. Default set to \code{TRUE}.}
 
-\item{.scale}{logical value indicating whether the input matrix should be
+\item{.scale}{logical value indicating whether the input matrix must be
 scaled before Principal Component Analysis. Default set to \code{FALSE}.}
 }
 \value{
@@ -87,7 +87,6 @@ points(sel$pc[sel2$model, 1:2],
   pch = 15,
   cex = 1
 )
-
 }
 \references{
 Naes, T., 1987. The design of calibration in near infra-red reflectance

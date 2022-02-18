@@ -4,7 +4,8 @@
 \alias{kenStone}
 \title{Kennard-Stone algorithm for calibration sampling}
 \usage{
-kenStone(X, k, metric = "mahal", pc, group, .center = TRUE, .scale = FALSE)
+kenStone(X, k, metric = "mahal", pc, group,
+         .center = TRUE, .scale = FALSE, init = NULL)
 }
 \arguments{
 \item{X}{a numeric matrix.}
@@ -36,6 +37,14 @@ centered before Principal Component Analysis. Default set to \code{TRUE}.}
 \item{.scale}{logical value indicating whether the input matrix should be
 scaled before Principal Component
 Analysis. Default set to \code{FALSE}.}
+
+\item{init}{(optional) a vector of integers indicating the indices of the
+observations/rows that are to be used as observations that must be included
+at the first iteration of the search process. Default is \code{NULL}, i.e. no
+fixed initialization. The function will take by default the two most distant
+observations. If the \code{group} argument is used, then all the observations
+in the groups covered by the \code{init} observations will be also included
+in the \code{init} subset.}
 }
 \value{
 a list with the following components:
@@ -87,13 +96,12 @@ data(NIRsoil)
 sel <- kenStone(NIRsoil$spc, k = 30, pc = .99)
 plot(sel$pc[, 1:2], xlab = "PC1", ylab = "PC2")
 # points selected for calibration
-points(sel$pc[sel$model, 1:2], pch = 19, col = 2) 
+points(sel$pc[sel$model, 1:2], pch = 19, col = 2)
 # Test on artificial data
 X <- expand.grid(1:20, 1:20) + rnorm(1e5, 0, .1)
 plot(X, xlab = "VAR1", ylab = "VAR2")
 sel <- kenStone(X, k = 25, metric = "euclid")
 points(X[sel$model, ], pch = 19, col = 2)
-
 }
 \references{
 Kennard, R.W., and Stone, L.A., 1969. Computer aided design of experiments.
@@ -104,5 +112,7 @@ Technometrics 11, 137-148.
 \code{\link{honigs}}
 }
 \author{
-Antoine Stevens & \href{https://orcid.org/0000-0002-5369-5120}{Leonardo Ramirez-Lopez}
+Antoine Stevens &
+\href{https://orcid.org/0000-0002-5369-5120}{Leonardo Ramirez-Lopez} with
+contributions from Thorsten Behrens and Philipp Baumann
 }

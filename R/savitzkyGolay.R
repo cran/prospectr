@@ -6,9 +6,9 @@
 #' savitzkyGolay(X, m, p, w, delta.wav)
 #' @param X a numeric matrix or vector to process (optionally a data frame that
 #' can be coerced to a numerical matrix).
-#' @param m the differentiation order.
-#' @param p the polynomial order.
-#' @param w a window size (must be odd).
+#' @param m an integer indcating the differentiation order.
+#' @param p an integer indicating the polynomial order.
+#' @param w an integer indicating the window size (must be odd).
 #' @param delta.wav (optional) sampling interval.
 #' @author Antoine Stevens and \href{https://orcid.org/0000-0002-5369-5120}{Leonardo Ramirez-Lopez}
 #' @examples
@@ -42,7 +42,6 @@
 #'
 #' mtext("1st derivative spectra")
 #' par(opar)
-#' 
 #' @details
 #' The Savitzky-Golay algorithm fits a local polynomial regression on the signal.
 #' It requires evenly spaced data points. Mathematically, it operates simply as
@@ -61,9 +60,15 @@
 #' The convolution function is written in C++/Rcpp for faster computations.
 #'
 #' @references
+#' Luo, J., Ying, K., He, P., & Bai, J. (2005). Properties of Savitzky–Golay
+#' digital differentiators. Digital Signal Processing, 15(2), 122-136.
+#'
 #' Savitzky, A., and Golay, M.J.E., 1964. Smoothing and
 #' differentiation of data by simplified least squares procedures.
 #' Anal. Chem. 36, 1627-1639.
+#'
+#' Schafer, R. W. (2011). What is a Savitzky-Golay filter? (lecture notes). IEEE
+#' Signal processing magazine, 28(4), 111-117.
 #'
 #' Wentzell, P.D., and Brown, C.D., 2000. Signal processing in analytical
 #' chemistry. Encyclopedia of Analytical Chemistry, 9764-9800.
@@ -79,10 +84,10 @@ savitzkyGolay <- function(X, m, p, w, delta.wav) {
     stop("needs an odd filter length w")
   }
   if (p >= w) {
-    stop("filter length w should be greater than polynomial order p")
+    stop("filter length w mus be greater than polynomial order p")
   }
   if (p < m) {
-    stop("polynomial order p should be geater or equal to differentiation order m")
+    stop("polynomial order p must be geater or equal to differentiation order m")
   }
 
   gap <- (w - 1) / 2
@@ -91,7 +96,7 @@ savitzkyGolay <- function(X, m, p, w, delta.wav) {
 
   if (is.matrix(X)) {
     if (w >= ncol(X)) {
-      stop("filter length w should be lower than ncol(X)")
+      stop("filter length w must be lower than ncol(X)")
     }
     output <- factorial(m) * convCppM(X, A[m + 1, ])
     g <- (w - 1) / 2
@@ -101,7 +106,7 @@ savitzkyGolay <- function(X, m, p, w, delta.wav) {
 
   if (is.vector(X)) {
     if (w >= length(X)) {
-      stop("filter length w should be lower than length(X)")
+      stop("filter length w must be lower than length(X)")
     }
     output <- factorial(m) * convCppV(X, A[m + 1, ])
     g <- (w - 1) / 2

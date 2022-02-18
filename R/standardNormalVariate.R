@@ -20,11 +20,10 @@
 #'   xlab = "wavelength, nm",
 #'   ylab = "snv"
 #' )
-#' 
 #' \dontrun{
 #' apply(NIRsoil$spc_snv, 1, sd) # check
 #' }
-#' 
+#'
 #' @return a matrix of normalized spectral data.
 #' @details
 #' SNV is simple way for normalizing spectral data that intends to correct for
@@ -45,7 +44,7 @@
 #'
 standardNormalVariate <- function(X) {
   if (!any(class(X) %in% c("matrix", "data.frame"))) {
-    stop("X should be a matrix or optionally a data.frame")
+    stop("X must be a matrix or optionally a data.frame")
   }
   X <- sweep(X, 1, rowMeans(X, na.rm = TRUE), "-")
   X <- sweep(X, 1, apply(X, 1, sd, na.rm = TRUE), "/")

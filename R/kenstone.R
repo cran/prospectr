@@ -4,7 +4,8 @@
 #' Select calibration samples from a large multivariate data using the
 #' Kennard-Stone algorithm
 #' @usage
-#' kenStone(X, k, metric = "mahal", pc, group, .center = TRUE, .scale = FALSE)
+#' kenStone(X, k, metric = "mahal", pc, group,
+#'          .center = TRUE, .scale = FALSE, init = NULL)
 #' @param X a numeric matrix.
 #' @param k number of calibration samples to be selected.
 #' @param metric distance metric to be used: 'euclid' (Euclidean distance) or
@@ -28,6 +29,13 @@
 #' @param .scale logical value indicating whether the input matrix should be
 #' scaled before Principal Component
 #' Analysis. Default set to \code{FALSE}.
+#' @param init (optional) a vector of integers indicating the indices of the
+#' observations/rows that are to be used as observations that must be included
+#' at the first iteration of the search process. Default is \code{NULL}, i.e. no
+#' fixed initialization. The function will take by default the two most distant
+#' observations. If the \code{group} argument is used, then all the observations
+#' in the groups covered by the \code{init} observations will be also included
+#' in the \code{init} subset.
 #' @return a list with the following components:
 #' \itemize{
 #'  \item{`model`:}{ numeric vector giving the row indices of the input data
@@ -45,14 +53,15 @@
 #' sel <- kenStone(NIRsoil$spc, k = 30, pc = .99)
 #' plot(sel$pc[, 1:2], xlab = "PC1", ylab = "PC2")
 #' # points selected for calibration
-#' points(sel$pc[sel$model, 1:2], pch = 19, col = 2) 
+#' points(sel$pc[sel$model, 1:2], pch = 19, col = 2)
 #' # Test on artificial data
 #' X <- expand.grid(1:20, 1:20) + rnorm(1e5, 0, .1)
 #' plot(X, xlab = "VAR1", ylab = "VAR2")
 #' sel <- kenStone(X, k = 25, metric = "euclid")
 #' points(X[sel$model, ], pch = 19, col = 2)
-#' 
-#' @author Antoine Stevens & \href{https://orcid.org/0000-0002-5369-5120}{Leonardo Ramirez-Lopez}
+#' @author Antoine Stevens &
+#' \href{https://orcid.org/0000-0002-5369-5120}{Leonardo Ramirez-Lopez} with
+#' contributions from Thorsten Behrens and Philipp Baumann
 #' @details
 #' The Kennard--Stone algorithm allows to select samples with a uniform
 #' distribution over the predictor space (Kennard and Stone, 1969).
@@ -81,11 +90,19 @@
 #' \mjeqn{\hat \lambda_a}{hat lambda_a} is the eigenvalue of principal
 #' component \mjeqn{a}{a} and \mjeqn{A}{A} is the number of principal components
 #' included in the computation.
+#'
 #' @seealso  \code{\link{duplex}}, \code{\link{shenkWest}}, \code{\link{naes}},
 #' \code{\link{honigs}}
 #' @export
-#'
-kenStone <- function(X, k, metric = "mahal", pc, group, .center = TRUE, .scale = FALSE) {
+
+kenStone <- function(X,
+                     k,
+                     metric = "mahal",
+                     pc,
+                     group,
+                     .center = TRUE,
+                     .scale = FALSE,
+                     init = NULL) {
   if (missing(k)) {
     stop("'k' must be specified")
   }
@@ -136,13 +153,40 @@ kenStone <- function(X, k, metric = "mahal", pc, group, .center = TRUE, .scale =
       group <- as.factor(group)
       warning("group has been coerced to a factor")
     }
+
+    if (k < nlevels(group)) {
+      stop("k is larger the the number of groups/levels in 'group'")
+    }
   }
 
-  # Fist two most distant points to model set
-  D <- fastDist(X, X, "euclid")
-  id <- c(arrayInd(which.max(D), rep(m, 2)))
+  distance_mat <- fastDist(X, X, "euclid")
   rm(X)
   gc()
+
+  if (!is.null(init)) {
+    # init is used to initialize the model set
+
+    is_integer <- function(x, tol = .Machine$double.eps^0.5) abs(x - round(x)) < tol
+    ## sanity checks for init
+    if (!all(is_integer(init))) {
+      stop("Seems like you are tryning to use non-integers in the init argument")
+    }
+
+    init <- unique(init)
+
+    if (k < length(init)) {
+      stop("Invalid argument: 'k' must be larger than the length of init")
+    }
+    id <- init
+
+    if (length(init) == 1) {
+      id <- c(id, which.max(distance_mat[, id]))
+    }
+  } else {
+    # Fist two most distant points to initialize the model set
+    id <- c(arrayInd(which.max(distance_mat), rep(m, 2)))
+  }
+
   if (!missing(group)) {
     id <- which(group %in% group[id])
     group <- group[-id]
@@ -154,13 +198,13 @@ kenStone <- function(X, k, metric = "mahal", pc, group, .center = TRUE, .scale =
 
   while (i < k) {
     if (i == ini) {
-      d <- D[model, -model]
+      distance_sub <- distance_mat[model, -model]
     } # first loop
     else {
-      d <- rbind(mins, D[nid, -model])
+      distance_sub <- rbind(mins, distance_mat[nid, -model])
     }
 
-    mins <- do.call(pmin.int, lapply(1:nrow(d), function(i) d[i, ]))
+    mins <- do.call(pmin.int, lapply(1:nrow(distance_sub), function(i) distance_sub[i, ]))
 
     id <- which.max(mins)
 

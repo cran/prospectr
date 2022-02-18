@@ -33,7 +33,6 @@
 #' )
 #' mtext("Detrend spectra")
 #' par(opar)
-#' 
 #' @details The detrend is a row-wise transformation that allows to correct for
 #' wavelength-dependent scattering effects (variations in curvilinearity). A
 #' \mjeqn{p}{p} order polynomial is fit for each spectrum (\mjeqn{x_i}{x_i})
@@ -56,7 +55,7 @@
 
 detrend <- function(X, wav, p = 2) {
   if (missing(wav)) {
-    stop("argument wav should be specified")
+    stop("argument wav must be specified")
   }
 
   if (is.data.frame(X)) {

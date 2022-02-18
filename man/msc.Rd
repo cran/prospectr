@@ -4,14 +4,17 @@
 \alias{msc}
 \title{Multiplicative Scatter Correction (msc)}
 \usage{
-msc(X, reference_spc = colMeans(X))
+msc(X, ref_spectrum = colMeans(X))
 }
 \arguments{
 \item{X}{a numeric matrix of spectral data.}
 
-\item{reference_spc}{a numeric vector corresponding to an "ideal" reference
+\item{ref_spectrum}{a numeric vector corresponding to an "ideal" reference
 spectrum (e.g. free of scattering effects). By default the function uses the
-mean spectrum of the input \code{X}. See details.}
+mean spectrum of the input \code{X}. See details. Note that this argument was
+previously named as \code{reference_spc}, however, it has been renamed to
+\code{ref_spectrum} to emphasize that this argument is a vector and not a
+matrix of spectra.}
 }
 \value{
 a matrix of normalized spectral data with an attribute which indicates the
@@ -28,7 +31,7 @@ and multiplicative effects (Geladi et al., 1985).
 \details{
 The Multiplicative Scatter Correction (MSC) is a normalization method that
 attempts to account for additive and multiplicative effects by aligning each
-spectrum (\mjeqn{x_i}{x_i}) with an ideal reference one (\mjeqn{x_r}{x_r}) as
+spectrum (\mjeqn{x_i}{x_i}) to an ideal reference one (\mjeqn{x_r}{x_r}) as
 follows:
 
 \mjdeqn{x_i = m_i x_r + a_i}{x_i = m_i x_r + a_i}
@@ -40,7 +43,7 @@ multiplicative terms respectively.
 \examples{
 data(NIRsoil)
 NIRsoil$msc_spc <- msc(X = NIRsoil$spc)
-# 10 first snv spectra
+# 10 first msc spectra
 matplot(
   x = as.numeric(colnames(NIRsoil$msc_spc)),
   y = t(NIRsoil$msc_spc[1:10, ]),
@@ -49,6 +52,19 @@ matplot(
   ylab = "msc"
 )
 
+# another example
+spectra_a <- NIRsoil$spc[1:40, ]
+spectra_b <- NIRsoil$spc[-(1:40), ]
+
+spectra_a_msc <- msc(spectra_a, colMeans(spectra_a))
+
+# correct spectra_a based on the reference spectrum used to correct
+# spectra_a
+
+spectra_b_msc <- msc(
+  spectra_b,
+  ref_spectrum = attr(spectra_a_msc, "Reference spectrum")
+)
 }
 \references{
 Geladi, P., MacDougall, D., and Martens, H. 1985. Linearization and

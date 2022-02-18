@@ -1,11 +1,11 @@
 #' @title Signal binning
 #' @description
 #' Compute average values of a signal in pre-determined bins (col-wise subsets).
-#' The bin size can be determined either directly or by specifying the number of 
+#' The bin size can be determined either directly or by specifying the number of
 #' bins. Sometimes called boxcar transformation in signal processing
 #' @usage
 #' binning(X, bins, bin.size)
-#' @param X a numeric matrix or vector to process (optionally a data frame that 
+#' @param X a numeric matrix or vector to process (optionally a data frame that
 #' can be coerced to a numerical matrix).
 #' @param bins the number of bins.
 #' @param bin.size the desired size of the bins.
@@ -45,44 +45,60 @@
 #'   t(NIRsoil$spc_binned[1:5, ]),
 #'   pch = 1:5
 #' )
-#' 
 #' @return
 #' a matrix or vector with average values per bin.
-#' @seealso 
+#' @seealso
 #' \code{\link{savitzkyGolay}}, \code{\link{movav}},
 #' \code{\link{gapDer}}, \code{\link{continuumRemoval}}
+#' @importFrom stats aggregate
 #' @export
 #'
+
 binning <- function(X, bins, bin.size) {
   if (is.data.frame(X)) {
     X <- as.matrix(X)
   }
   if (!missing(bins) & !missing(bin.size)) {
-    stop("EITHER 'bins' OR 'bin.size' must be specified")
+    stop("either 'bins' or 'bin.size' must be specified")
   }
   if (missing(bins) & missing(bin.size)) {
     return(X)
   }
 
   if (is.matrix(X)) {
-    p1 <- ncol(X)
+    nv <- ncol(X)
   } else {
-    p1 <- length(X)
+    nv <- length(X)
   }
+
 
   if (missing(bins) & !missing(bin.size)) {
-    b <- findInterval(1:p1, seq(1, p1, bin.size))
+    b <- findInterval(
+      1:nv,
+      seq(1, nv, bin.size),
+      left.open = FALSE
+    )
   } else {
-    b <- findInterval(1:p1, seq(1, p1, length.out = bins + 1), rightmost.closed = TRUE)
+    bins <- bins + 1
+    b <- findInterval(
+      1:nv,
+      round(seq(1, nv, length.out = bins), 3), # round to 3 to avoid the famous floating math imprecision bug of R
+      rightmost.closed = TRUE,
+      left.open = FALSE
+    )
   }
 
-  p2 <- max(b)
+  n_classes <- max(b)
 
   if (is.matrix(X)) {
-    output <- matrix(0, nrow(X), p2)
-    for (i in seq_len(p2)) {
-      output[, i] <- rowMeans(X[, b == i, drop = F])
-    }
+    output <- matrix(0, nrow(X), n_classes)
+
+    # for (i in seq_len(n_classes)) {
+    #   output[, i] <- rowMeans(X[, b == i, drop = F])
+    # }
+
+    output <- aggregate(t(X), by = list(bin = b), FUN = mean)
+    output <- t(output[order(output[, 1]), -1])
     colnames(output) <- colnames(X)[ceiling(tapply(b, b, function(x) mean(which(b == x[1]), na.rm = TRUE)))] # find colnames
     rownames(output) <- rownames(X)
   } else {

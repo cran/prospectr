@@ -47,7 +47,7 @@
 #' The replicates with outlying variance are removed and the test can be applied
 #' iteratively until no outlying variance is detected under the given *p*-value.
 #' Such iterative procedure is implemented in `cochranTest`, allowing the user
-#' to specify whether a set of replicates should be removed or not from the
+#' to specify whether a set of replicates must be removed or not from the
 #' dataset by graphical inspection of the outlying replicates. The user has then
 #' the possibility to (i) remove all replicates at once, (ii) remove one or more
 #' replicates by giving their indices or (iii) remove nothing.
@@ -74,15 +74,20 @@ cochranTest <- function(X, id, fun = "sum", alpha = 0.05) {
   X <- data.frame(ID = 1:n, X, check.names = FALSE)
 
   while (pval <= alpha) {
-    x <- switch(fun, sum = {
-      apply(X[, -1], 1, sum)
-    }, mean = {
-      apply(X[, -1], 1, mean)
-    }, PC1 = {
-      prcomp(X[, -1], center = TRUE, .scale = FALSE)$x[, 1]
-    }, PC2 = {
-      prcomp(X[, -1], center = TRUE, .scale = FALSE)$x[, 2]
-    })
+    x <- switch(fun,
+      sum = {
+        apply(X[, -1], 1, sum)
+      },
+      mean = {
+        apply(X[, -1], 1, mean)
+      },
+      PC1 = {
+        prcomp(X[, -1], center = TRUE, .scale = FALSE)$x[, 1]
+      },
+      PC2 = {
+        prcomp(X[, -1], center = TRUE, .scale = FALSE)$x[, 2]
+      }
+    )
 
     vars <- tapply(x, id, var) # variances
     pval <- Cul(max(vars) / sum(vars), mean(table(id)), length(vars))

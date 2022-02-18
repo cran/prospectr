@@ -4,12 +4,12 @@
 \alias{puchwein}
 \title{Puchwein algorithm for calibration sampling}
 \usage{
-puchwein(X, 
-         pc = 0.95, 
-         k, 
-         min.sel, 
+puchwein(X,
+         pc = 0.95,
+         k,
+         min.sel,
          details = FALSE,
-         .center = TRUE, 
+         .center = TRUE,
          .scale = FALSE)
 }
 \arguments{
@@ -35,11 +35,11 @@ principal components}
 \item{details}{logical value, if \code{TRUE}, adds a component in the output list
 with the indices of the objects kept in each loop (default to \code{FALSE}).}
 
-\item{.center}{logical value indicating whether the input matrix should be
+\item{.center}{logical value indicating whether the input matrix must be
 centered before Principal Component.
 Analysis. Default set to TRUE.}
 
-\item{.scale}{logical value indicating whether the input matrix should be
+\item{.scale}{logical value indicating whether the input matrix must be
 scaled before Principal Component
 Analysis. Default set to FALSE.}
 }
@@ -111,11 +111,10 @@ opar <- par(no.readonly = TRUE)
 par(mar = c(4, 5, 2, 2))
 plot(sel$leverage$loop, sel$leverage$diff,
   type = "l",
-  xlab = "# loops", 
+  xlab = "# loops",
   ylab = "Difference between theoretical and \n observed sum of leverages"
 )
 par(opar)
-
 }
 \references{
 Puchwein, G., 1988. Selection of calibration samples for near-infrared
