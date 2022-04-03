@@ -127,7 +127,7 @@ read_nircal <- function(file,
   )
 
   first_lines <- readLines(con = file, 1:2)
-  if (length(first_lines) > 1) {
+  if (length(first_lines) >= 1) {
     isnircal <- grepRaw("NIRCAL Project File", first_lines, all = TRUE)
   } else {
     isnircal <- NULL
@@ -633,7 +633,7 @@ get_nircal_response <- function(x, n) {
 
 
   if (sum(duplicated(property_names)) > 0) {
-    wnr <- c("Some property names are duplicated, please correct the names. Indices have been added to the repeated names")
+    wrn <- c("Some property names are duplicated, please correct the names. Indices have been added to the repeated names")
     dpn <- unique(property_names[duplicated(property_names)])
     for (i in 1:length(dpn)) {
       property_names[property_names == dpn] <- paste(property_names[property_names == dpn],
