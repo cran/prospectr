@@ -1,5 +1,30 @@
-# `prospectr`
+`prospectr 0.2.7 (cakes)`
+===============
 
+### Improvements and fixes
+
+
+* `read_nircal()`: The function was crashing because of some special characters 
+in the IDs. This has been fixed 
+([#65](https://github.com/l-ramirez-lopez/prospectr/issues/65)). 
+
+* `kenStone()`: An issue has been fixed for the `k` argument when `group` 
+was used. The function prevented to pass a value to the `k` argument 
+larger than the number of groups passed to the `group` argument 
+([#51](https://github.com/l-ramirez-lopez/prospectr/issues/51)). Thanks to 
+Michael Simmler from Agroscope for pointing at this issue. 
+
+
+* `duplex()`: Avoid error when the number of samples to select is exactly half 
+of the size of the input data set 
+([#48](https://github.com/l-ramirez-lopez/prospectr/pull/48)). Thanks to Philipp 
+Baumann for his pull request solving this issue. Some modifications to his 
+original solution were made which also address the concerns raised by 
+Matthew Dirks (skylogic004) 
+([#56](https://github.com/l-ramirez-lopez/prospectr/pull/56)). Thank you! 
+
+* `read_nircal()`: fixes a bug when reading some special type of 
+comments of each sample in the file.
 
 `prospectr` 0.2.6
 ===============

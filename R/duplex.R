@@ -38,11 +38,11 @@
 #' Analysis. Default set to \code{FALSE}.
 #' @return a `list` with components:
 #' \itemize{
-#'  \item{'`model`'}{ numeric vector giving the row indices of the input data
+#'  \item{'`model`': numeric vector giving the row indices of the input data
 #'  selected for calibration}
-#'  \item{'`test`'}{ numeric vector giving the row indices of the input data
+#'  \item{'`test`': numeric vector giving the row indices of the input data
 #'  selected for validation}
-#'  \item{'`pc`'}{ if the `pc` argument is specified, a numeric matrix of the
+#'  \item{'`pc`': if the `pc` argument is specified, a numeric matrix of the
 #'  scaled pc scores}
 #' }
 #' @references
@@ -116,7 +116,7 @@ duplex <- function(X,
     }
     scores <- X <- pca$x[, 1:pc, drop = F]
   }
-
+  
   if (metric == "mahal") {
     # Project in the Mahalanobis distance space
     X <- e2m(X, sm.method = "svd")
@@ -124,14 +124,14 @@ duplex <- function(X,
       scores <- X
     }
   }
-
+  
   m <- nrow(X)
   n <- 1:nrow(X)
   half <- floor(m / 2)
   if (k > half) {
     k <- half
   }
-
+  
   if (!missing(group)) {
     if (length(group) != nrow(X)) {
       stop("length(group) must be equal to nrow(X)")
@@ -141,74 +141,74 @@ duplex <- function(X,
       warning("group has been coerced to a factor")
     }
   }
-
+  
   # Fist two most distant points to model set
   D <- fastDist(X, X, "euclid")
   id <- c(arrayInd(which.max(D), rep(m, 2)))
-
+  
   if (!missing(group)) {
     id <- which(group %in% group[id])
     group <- group[-id]
   }
-
+  
   model <- n[id]
   n <- n[-id]
-
+  
   # Another two most distant points to test set
   id <- c(arrayInd(which.max(D[, -id]), rep(m - 2, 2)))
-
+  
   if (!missing(group)) {
     id <- which(group %in% group[id])
     group <- group[-id]
   }
-
+  
   test <- n[id]
   n <- n[-id]
-
+  
   ini <- i <- length(model)
-
+  
   while (i < k) {
     # cal
     if (i == ini) {
-      d <- D[model, -c(model, test)]
-      mins_cal <- do.call(pmin.int, lapply(1:nrow(d), function(i) d[i, ]))
+      d <- D[model, -c(model, test), drop = FALSE]
+      mins_cal <- do.call(pmin.int, lapply(seq_len(nrow(d)), function(i) d[i, ]))
     } else {
-      d <- rbind(D[nid_cal, -c(model, test)], mins_cal)
-      mins_cal <- do.call(pmin.int, lapply(1:nrow(d), function(i) d[i, ]))
+      d <- rbind(D[nid_cal, -c(model, test), drop = FALSE], mins_cal)
+      mins_cal <- do.call(pmin.int, lapply(seq_len(nrow(d)), function(i) d[i, ]))
     }
-
+    
     id <- which.max(mins_cal)
-
+    
     if (!missing(group)) {
       id <- which(group %in% group[id])
       group <- group[-id]
     }
-
+    
     nid_cal <- n[id]
     model <- c(model, nid_cal)
     n <- n[-id]
-
+    
     mins_cal <- mins_cal[-id]
     if (i != ini) {
       mins_val <- mins_val[-id]
     }
-
+    
     # test
     if (i == ini) {
-      d <- D[test, -c(model, test)]
-      mins_val <- do.call(pmin.int, lapply(1:nrow(d), function(i) d[i, ]))
+      d <- D[test, -c(model, test), drop = FALSE]
+      mins_val <- do.call(pmin.int, lapply(seq_len(nrow(d)), function(i) d[i, ]))
     } else {
-      d <- rbind(D[nid_val, -c(model, test)], mins_val)
-      mins_val <- do.call(pmin.int, lapply(1:nrow(d), function(i) d[i, ]))
+      d <- rbind(D[nid_val, -c(model, test), drop = FALSE], mins_val)
+      mins_val <- do.call(pmin.int, lapply(seq_len(nrow(d)), function(i) d[i, ]))
     }
-
+    
     id <- which.max(mins_val)
-
+    
     if (!missing(group)) {
       id <- which(group %in% group[id])
       group <- group[-id]
     }
-
+    
     nid_val <- n[id]
     test <- c(test, nid_val)
     n <- n[-id]
@@ -216,7 +216,7 @@ duplex <- function(X,
     mins_cal <- mins_cal[-id]
     i <- length(model)
   }
-
+  
   if (missing(pc)) {
     return(list(model = model, test = test))
   } else {
