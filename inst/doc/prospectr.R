@@ -109,19 +109,19 @@ legend("topleft",
 par(new = FALSE)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  # a reference set of spectra
-#  Xr <- NIRsoil$spc[NIRsoil$train == 1, ]
-#  
-#  # an "unseen" set of spectra
-#  Xu <- NIRsoil$spc[NIRsoil$train == 0, ]
-#  
-#  # apply msc to Xr
-#  Xr_msc <- msc(Xr)
-#  
-#  # apply the same msc to Xu
-#  attr(Xr_msc, "Reference spectrum") # use this info from the previous object
-#  
-#  Xu_msc <- msc(Xu, ref_spectrum = attr(Xr_msc, "Reference spectrum"))
+# # a reference set of spectra
+# Xr <- NIRsoil$spc[NIRsoil$train == 1, ]
+# 
+# # an "unseen" set of spectra
+# Xu <- NIRsoil$spc[NIRsoil$train == 0, ]
+# 
+# # apply msc to Xr
+# Xr_msc <- msc(Xr)
+# 
+# # apply the same msc to Xu
+# attr(Xr_msc, "Reference spectrum") # use this info from the previous object
+# 
+# Xu_msc <- msc(Xu, ref_spectrum = attr(Xr_msc, "Reference spectrum"))
 
 ## ----detrend, fig.cap="Effect of SNV-Detrend on raw spectra",fig.height = 4, fig.width = 6, fig.retina = 1, out.extra='style= "background-color: #FFFFFF; border: 10px solid transparent; padding:0px"'----
 # X = input spectral matrix
@@ -300,16 +300,16 @@ grid()
 points(pu$pc[pu$model,],col = "red", pch = 19) # selected samples
 
 ## ----puchwein2, fig.cap="How to find the optimal loop", eval = FALSE----------
-#  par(mfrow = c(2, 1))
-#  plot(pu$leverage$removed,pu$leverage$diff,
-#       type = "l",
-#       xlab = "# samples removed",
-#       ylab="Difference between th. and obs sum of leverages")
-#  # This basically shows that the first loop is optimal
-#  plot(pu$leverage$loop,nrow(NIRsoil) - pu$leverage$removed,
-#       xlab = "# loops",
-#       ylab = "# samples kept", type = "l")
-#  par(mfrow = c(1, 1))
+# par(mfrow = c(2, 1))
+# plot(pu$leverage$removed,pu$leverage$diff,
+#      type = "l",
+#      xlab = "# samples removed",
+#      ylab="Difference between th. and obs sum of leverages")
+# # This basically shows that the first loop is optimal
+# plot(pu$leverage$loop,nrow(NIRsoil) - pu$leverage$removed,
+#      xlab = "# loops",
+#      ylab = "# samples kept", type = "l")
+# par(mfrow = c(1, 1))
 
 ## ----honigs, fig.cap="Spectra selected with the Honigs algorithm and bands used", fig.height = 4.5, fig.width = 4, fig.retina = 1, fig.align = 'center', out.extra='style= "background-color: #FFFFFF; border: 10px solid transparent; padding:0px"'----
 # type = "A" is for absorbance data
